@@ -18,66 +18,72 @@ int main(){
             }
         }
         cost[0][0] = 0;
-        queue<pair<int,int>> coords;
-        coords.push(make_pair(0,0));
-        while (!coords.empty())
-        {
-            set<pair<int,int>> toAdd;
-            while (!coords.empty())
-            {
-                int x = coords.front().first, y = coords.front().second;
-                coords.pop();
-                int add = 0;
-                if(x > 0){
-                    if(grid[x-1][y] != grid[x][y]){
-                        add = 1;
-                    }else{
-                        add = 0;
-                    }
-                    if(cost[x][y] + add < cost[x-1][y]){
-                        cost[x-1][y] = cost[x][y] + add;
-                        toAdd.emplace(make_pair(x-1,y));
-                    }
+        deque<pair<int,int>> coords;
+        coords.push_front(make_pair(0,0));
+        while (!coords.empty()){
+            int x = coords.front().first, y = coords.front().second;
+            coords.pop_front();
+            int add = 0;
+            if(x > 0){
+                if(grid[x-1][y] != grid[x][y]){
+                    add = 1;
+                }else{
+                    add = 0;
                 }
-                if(y > 0){
-                    if(grid[x][y-1] != grid[x][y]){
-                        add = 1;
+                if(cost[x][y] + add < cost[x-1][y]){
+                    cost[x-1][y] = cost[x][y] + add;
+                    if(add == 1){
+                        coords.push_back(make_pair(x-1, y));
                     }else{
-                        add = 0;
-                    }
-                    if(cost[x][y] + add < cost[x][y-1]){
-                        cost[x][y-1] = cost[x][y] + add;
-                        toAdd.emplace(make_pair(x,y-1));
-                    }
-                }
-                if(x < r-1){
-                    if(grid[x+1][y] != grid[x][y]){
-                        add = 1;
-                    }else{
-                        add = 0;
-                    }
-                    if(cost[x][y] + add < cost[x+1][y]){
-                        cost[x+1][y] = cost[x][y] + add;
-                        toAdd.emplace(make_pair(x+1,y));
-                    }
-                }
-                if(y < c-1){
-                    if(grid[x][y+1] != grid[x][y]){
-                        add = 1;
-                    }else{
-                        add = 0;
-                    }
-                    if(cost[x][y] + add < cost[x][y+1]){
-                        cost[x][y+1] = cost[x][y] + add;
-                        toAdd.emplace(make_pair(x,y+1));
+                        coords.push_front(make_pair(x-1, y));
                     }
                 }
             }
-            queue<pair<int,int>>().swap(coords);
-            for(auto it = toAdd.begin(); it != toAdd.end(); it++){
-                coords.push(*it);
+            if(y > 0){
+                if(grid[x][y-1] != grid[x][y]){
+                    add = 1;
+                }else{
+                    add = 0;
+                }
+                if(cost[x][y] + add < cost[x][y-1]){
+                    cost[x][y-1] = cost[x][y] + add;
+                    if(add == 1){
+                        coords.push_back(make_pair(x, y-1));
+                    }else{
+                        coords.push_front(make_pair(x, y-1));
+                    }
+                }
             }
-
+            if(x < r-1){
+                if(grid[x+1][y] != grid[x][y]){
+                    add = 1;
+                }else{
+                    add = 0;
+                }
+                if(cost[x][y] + add < cost[x+1][y]){
+                    cost[x+1][y] = cost[x][y] + add;
+                    if(add == 1){
+                        coords.push_back(make_pair(x+1, y));
+                    }else{
+                        coords.push_front(make_pair(x+1, y));
+                    }
+                }
+            }
+            if(y < c-1){
+                if(grid[x][y+1] != grid[x][y]){
+                    add = 1;
+                }else{
+                    add = 0;
+                }
+                if(cost[x][y] + add < cost[x][y+1]){
+                    cost[x][y+1] = cost[x][y] + add;
+                    if(add == 1){
+                        coords.push_back(make_pair(x, y+1));
+                    }else{
+                        coords.push_front(make_pair(x, y+1));
+                    }
+                }
+            }
         }
         printf("%d\n", cost[r-1][c-1]);
     }
